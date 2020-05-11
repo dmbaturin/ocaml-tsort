@@ -21,10 +21,17 @@ let fmt_tsort_result res =
   match res with
   | Tsort.Sorted l ->
       sprintf "Sorted %s" (fmt_list string_of_int l)
-  | Tsort.ErrorNonexistent l ->
-      sprintf "ErrorNonexistent %s" (fmt_list string_of_int l)
   | Tsort.ErrorCycle l ->
       sprintf "ErrorCycle %s" (fmt_list string_of_int l)
+
+let test_find_nonexistent_nodes () =
+  assert (
+    (Tsort.find_nonexistent_nodes
+       [1, []; 2, [3]; 4, [5; 7]; 6, [2]]
+     |> List.sort compare
+    )
+    = [3; 5; 7]
+  )
 
 let test_tsort () =
   let sort graph =
@@ -50,10 +57,10 @@ let test_tsort () =
     Sorted [7; 6; 4; 5; 3; 2; 1]
   )
 
-let test_component_partition () =
+let test_find_sc_components () =
   let p graph =
     printf "input: %s\n%!" (fmt_graph graph);
-    let partition = Tsort.Components.partition graph in
+    let partition = Tsort.find_strongly_connected_components graph in
     printf "output: %s\n%!" (fmt_partition partition);
     partition
   in
@@ -86,10 +93,10 @@ let test_component_partition () =
     = [[1]; [2; 3; 4]; [5]]
   )
 
-let test_component_sort () =
+let test_sort_sc_components () =
   let sort graph =
     printf "input: %s\n%!" (fmt_graph graph);
-    let components = Tsort.Components.sort graph in
+    let components = Tsort.sort_strongly_connected_components graph in
     printf "output: %s\n%!" (fmt_partition components);
     components
   in
@@ -108,11 +115,10 @@ let test_component_sort () =
 let main () =
   Alcotest.run "Tsort" [
     "Tsort", [
+      "find nonexistent nodes", `Quick, test_find_nonexistent_nodes;
       "sort", `Quick, test_tsort;
-    ];
-    "Tsort.Components", [
-      "partition", `Quick, test_component_partition;
-      "sort", `Quick, test_component_sort;
+      "find s.c. components", `Quick, test_find_sc_components;
+      "sort s.c. components", `Quick, test_sort_sc_components;
     ];
   ]
 
