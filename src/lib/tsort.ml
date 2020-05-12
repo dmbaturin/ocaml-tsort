@@ -50,13 +50,14 @@ let find_nonexistent_nodes nodes =
     | n :: ns ->
       if List.exists ((=) n) keys then find_aux ns nonexistent
       else find_aux ns (n :: nonexistent)
-    | [] -> nonexistent
+    | [] -> nonexistent |> CCList.uniq ~eq:(=)
   in
-  let nonexistent =
-    List.fold_left (fun acc (_, vs) ->
-      List.append acc (find_aux vs [])
-    ) [] nodes in
-  CCList.uniq ~eq:(=) nonexistent
+  List.fold_left (fun acc (v, vs) ->
+    let ns = find_aux vs [] in
+    match ns with
+    | [] -> acc
+    | _ -> (v, ns) :: acc
+  ) [] nodes
 
 (*
    Append missing nodes to the graph, in the order in which they were

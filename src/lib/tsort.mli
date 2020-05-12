@@ -32,15 +32,18 @@ val sort : ('a * 'a list) list -> 'a sort_result
 *)
 val sort_strongly_connected_components : ('a * 'a list) list -> 'a list list
 
-(** Report nodes mentioned in a list of out-neighbors but not explicitly
-    listed otherwise. This is useful for detecting user-entry errors,
-    since the other functions of the module silently add those nodes to
+(** Report nodes that have non-existent dependencies.
+    This is useful for detecting user-entry errors,
+    since the other functions of the module silently add missing nodes to
     the graph.
 
+    The result is an assoc list where the keys are nodes with bad dependencies,
+    and values are lists of nodes not found among the original assoc list keys.
+
     For example, [find_nonexistent_nodes ["test", ["biuld"]; "build", []]]
-    returns [["biuld"]].
+    returns ["test", ["biuld"]].
 *)
-val find_nonexistent_nodes : ('a * 'a list) list -> 'a list
+val find_nonexistent_nodes : ('a * 'a list) list -> ('a * 'a list) list
 
 (**
    Partition a graph into its strongly-connected components:
