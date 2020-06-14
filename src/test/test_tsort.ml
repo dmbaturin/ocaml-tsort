@@ -25,12 +25,19 @@ let fmt_tsort_result res =
       sprintf "ErrorCycle %s" (fmt_list string_of_int l)
 
 let test_find_nonexistent_nodes () =
+  (* basic functionality *)
   assert (
     (Tsort.find_nonexistent_nodes
-       [1, []; 2, [3]; 4, [5; 7]; 6, [2]]
-     |> List.sort compare
+       [1, []; 2, [3]]
     )
-    = [3; 5; 7]
+    = [2, [3]]
+  );
+  (* check edge filtering *)
+  assert (
+    (Tsort.find_nonexistent_nodes
+       [1, []; 2, [3]; 4, [5; 6; 7; 5]; 6, [2]]
+    )
+    = [2, [3]; 4, [5; 7]]
   )
 
 let test_tsort () =

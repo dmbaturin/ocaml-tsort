@@ -40,24 +40,43 @@ let remove_dependency hash dep =
   let ids = CCHashtbl.keys_list hash in
   List.iter (aux dep hash) ids
 
+(* Deduplicate list items.
+
+   Differences with CCList.uniq:
+   - when an item is duplicated, keep the first item encountered rather than
+     the last: [1;2;3;1] gives [1;2;3] (not [2;3;1]).
+   - complexity is O(n), not O(n^2).
+*)
+let deduplicate l =
+  let tbl = Hashtbl.create (List.length l) in
+  List.fold_left (fun acc x ->
+    if Hashtbl.mem tbl x then
+      acc
+    else (
+      Hashtbl.add tbl x ();
+      x :: acc
+    )
+  ) [] l
+  |> List.rev
+
 (* Finds non-existent nodes,
-   that is, nodes that are mentiones in the value part of the assoc list,
-   but don't exist among the assoc list keys *)
+   that is, nodes that are mentioned in the value part of the assoc list,
+   but don't exist among the assoc list keys.
+
+   Complexity is O(n), where n = |V| + |E|.
+ *)
 let find_nonexistent_nodes nodes =
-  let keys = List.fold_left (fun acc (k, _) -> k :: acc) [] nodes in
-  let rec find_aux ns nonexistent =
-    match ns with
-    | n :: ns ->
-      if List.exists ((=) n) keys then find_aux ns nonexistent
-      else find_aux ns (n :: nonexistent)
-    | [] -> nonexistent |> CCList.uniq ~eq:(=)
-  in
-  List.fold_left (fun acc (v, vs) ->
-    let ns = find_aux vs [] in
-    match ns with
-    | [] -> acc
-    | _ -> (v, ns) :: acc
-  ) [] nodes
+  let graph = Hashtbl.create (List.length nodes) in
+  List.iter (fun (u, vl) -> Hashtbl.add graph u vl) nodes;
+  List.filter_map (fun (u, vl) ->
+    let missing =
+      List.filter (fun v -> not (Hashtbl.mem graph v)) vl
+      |> deduplicate
+    in
+    match missing with
+    | [] -> None
+    | missing -> Some (u, missing)
+  ) nodes
 
 (*
    Append missing nodes to the graph, in the order in which they were
