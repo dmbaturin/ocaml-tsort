@@ -13,5 +13,8 @@ for switch in $(cat .circleci/opam-switches); do
   opam switch "$switch"
   eval $(opam env)
   opam update
+  # Install dependencies as specified in the opam package
   opam install . --deps-only -y
+  # Install dependencies needed for tests only
+  opam install alcotest
 done
