@@ -68,7 +68,7 @@ let deduplicate l =
 let find_nonexistent_nodes nodes =
   let graph = Hashtbl.create (List.length nodes) in
   List.iter (fun (u, vl) -> Hashtbl.add graph u vl) nodes;
-  List.filter_map (fun (u, vl) ->
+  Compat.List.filter_map (fun (u, vl) ->
     let missing =
       List.filter (fun v -> not (Hashtbl.mem graph v)) vl
       |> deduplicate
