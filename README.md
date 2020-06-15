@@ -1,4 +1,4 @@
-ocaml-tsort
+ocaml-tsort [![CircleCI badge](https://circleci.com/gh/dmbaturin/ocaml-tsort.svg?style=svg)](https://app.circleci.com/pipelines/github/dmbaturin/ocaml-tsort)
 ===========
 
 This module provides topological sort based on Kahn's algorithm. It's not very fast, but it's easy to use
