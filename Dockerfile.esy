@@ -1,0 +1,9 @@
+FROM superherointj/archlinux-esy AS batci-builder
+
+COPY src ./src/
+COPY *.opam *.json dune dune-project Makefile ./
+
+RUN npm run install
+RUN npm run build
+RUN npm run test
+RUN npm run clean
