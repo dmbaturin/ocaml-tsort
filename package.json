@@ -1,0 +1,16 @@
+{
+    "name": "tsort",
+    "esy": {
+        "build": "dune build -p #{self.name}",
+        "buildDev": "refmterr dune build -p #{self.name}"
+    },
+    "dependencies": {
+        "ocaml": "*",
+        "@opam/dune": "*",
+        "@opam/containers": "*"
+    },
+    "devDependencies": {
+        "refmterr": "*",
+        "@opam/merlin": "*"
+    }
+}
