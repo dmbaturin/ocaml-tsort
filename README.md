@@ -73,3 +73,6 @@ but spouse and sibling pairs are not separated.
 
 There's also `Tsort.find_strongly_connected_components` if you just want to find what they are.
 For the data above, it would return `[["Morticia"; "Gomez"]; ["Wednesday"; "Pugsley"]; ["Grandmama"]; ["Fester"]]`.
+
+# Contributing
+To run our complete test suite run `make test-complete` (requires docker).
