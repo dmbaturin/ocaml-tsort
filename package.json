@@ -1,0 +1,23 @@
+{
+    "name": "tsort",
+    "scripts": {
+        "install": "esy",
+        "build": "esy build",
+        "test": "esy make test",
+        "clean": "esy make clean; rm -rf _esy _build node_modules esy.lock *.install"
+    },
+    "esy": {
+        "build": "dune build -p #{self.name}",
+        "buildDev": "refmterr dune build -p #{self.name}"
+    },
+    "dependencies": {
+        "ocaml": "*",
+        "@opam/dune": "*",
+        "@opam/containers": "*"
+    },
+    "devDependencies": {
+        "refmterr": "*",
+        "@opam/merlin": "*",
+        "@opam/alcotest": "*"
+    }
+}

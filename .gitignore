@@ -21,3 +21,9 @@ setup.log
 
 # Merlin configuring file for Vim and Emacs
 .merlin
+
+# Ignoring Esy
+_esy
+*esy.lock*
+node_modules
+*.install
