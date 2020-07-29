@@ -1,4 +1,4 @@
-FROM superherointj/archlinux-esy AS batci-builder
+FROM superherointj/archlinux-esy
 
 COPY src ./src/
 COPY *.opam *.json dune dune-project Makefile ./
