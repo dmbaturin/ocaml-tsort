@@ -61,18 +61,24 @@ Contrived example: you want to line up the Addams family so that children come a
 but spouse and sibling pairs are not separated.
 
 ```
-# Tsort.sort_strongly_connected_components
-  ["Morticia", ["Gomez"]; "Gomez", ["Morticia"];
-   "Wednesday", ["Morticia"; "Gomez"; "Pugsley"]; "Pugsley", ["Morticia"; "Gomez"; "Wednesday"];
-   "Grandmama", []; "Fester", []] ;;
+Tsort.sort_strongly_connected_components [
+  "Morticia",  ["Gomez"; "Grandmama"];
+  "Gomez",     ["Morticia"; "Grandmama"];
+  "Wednesday", ["Morticia"; "Gomez"; "Pugsley"];
+  "Pugsley",   ["Morticia"; "Gomez"; "Wednesday"];
+  "Grandmama", [];
+  "Fester",    []
+]
+;;
 
 - : string list list =
-[["Fester"]; ["Morticia"; "Gomez"]; ["Grandmama"]; ["Wednesday"; "Pugsley"]]
+[["Fester"]; ["Grandmama"]; ["Morticia"; "Gomez"]; ["Wednesday"; "Pugsley"]]
 
 ```
 
-There's also `Tsort.find_strongly_connected_components` if you just want to find what they are.
+There's also `Tsort.find_strongly_connected_components` if you just want to find what them.
 For the data above, it would return `[["Morticia"; "Gomez"]; ["Wednesday"; "Pugsley"]; ["Grandmama"]; ["Fester"]]`.
 
 # Contributing
-To run our complete test suite run `make test-complete` (requires docker).
+
+To run our complete test suite, run `make test-complete` (requires docker).
