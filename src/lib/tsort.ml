@@ -140,8 +140,18 @@ module Graph = struct
   type ('a, 'b) t = ('a, 'b list) Hashtbl.t
 
   let create l : (_, _) t =
+    let update h k v =
+      let orig_v = Hashtbl.find_opt h k in
+      match orig_v with
+      | None -> Hashtbl.add h k v
+      | Some orig_v ->
+        (* Allow "partial" dependency lists like [(1, [2]); (1, [3]); (2, [1])].
+           Sometimes it's a more natural way to write cyclic graphs.
+         *)
+        Hashtbl.replace h k (List.append orig_v v)
+    in
     let tbl = Hashtbl.create 100 in
-    List.iter (fun (k, v) -> Hashtbl.replace tbl k v) l;
+    List.iter (fun (k, v) -> update tbl k v) l;
     tbl
 
   let transpose tbl =
