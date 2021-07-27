@@ -141,7 +141,7 @@ module Graph = struct
 
   let create l : (_, _) t =
     let update h k v =
-      let orig_v = Hashtbl.find_opt h k in
+      let orig_v = Compat.Hashtbl.find_opt h k in
       match orig_v with
       | None -> Hashtbl.add h k v
       | Some orig_v ->
