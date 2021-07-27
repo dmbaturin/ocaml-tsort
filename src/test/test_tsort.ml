@@ -62,6 +62,9 @@ let test_tsort () =
     (* Multiple solutions are valid. This is the one returned by the current
        implementation. *)
     Sorted [7; 6; 4; 5; 3; 2; 1]
+  );
+  assert (
+    sort [1, [2]; 2, [3] (* 3 is missing *)] = Sorted [3; 2; 1]
   )
 
 let test_find_sc_components () =
