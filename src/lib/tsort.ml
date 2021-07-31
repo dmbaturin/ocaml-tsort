@@ -44,7 +44,7 @@ let remove_dependency hash dep =
     let deps = Hashtbl.find hash id in
     let deps =
       if List.exists ((=) dep) deps then
-        CCList.remove ~eq:(=) ~key:dep deps
+        Compat.List.remove ~eq:(=) ~key:dep deps
       else deps
     in
     begin
@@ -52,7 +52,7 @@ let remove_dependency hash dep =
       Hashtbl.add hash id deps
     end
   in
-  let ids = CCHashtbl.keys_list hash in
+  let ids = Compat.Hashtbl.list_keys hash in
   List.iter (aux dep hash) ids
 
 (* Deduplicate list items.
@@ -143,7 +143,7 @@ let sort nodes =
   let () = remove_nodes base_nodes nodes_hash in
   let sorted_node_ids = sorting_loop base_nodes nodes_hash [] in
   let sorted_node_ids = List.append base_nodes sorted_node_ids in
-  let remaining_ids = CCHashtbl.keys_list nodes_hash in
+  let remaining_ids = Compat.Hashtbl.list_keys nodes_hash in
   match remaining_ids with
   | [] -> Sorted sorted_node_ids
   | _  -> ErrorCycle remaining_ids
