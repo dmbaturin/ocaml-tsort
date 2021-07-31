@@ -9,6 +9,21 @@ type 'a sort_result =
   | Sorted of 'a list
   | ErrorCycle of 'a list
 
+let graph_hash_of_list l =
+  let update h k v =
+    let orig_v = Compat.Hashtbl.find_opt h k in
+    match orig_v with
+    | None -> Hashtbl.add h k v
+    | Some orig_v ->
+      (* Allow "partial" dependency lists like [(1, [2]); (1, [3]); (2, [1])].
+	 Sometimes it's a more natural way to write cyclic graphs.
+       *)
+      Hashtbl.replace h k (List.append orig_v v)
+  in
+  let tbl = Hashtbl.create 100 in
+  List.iter (fun (k, v) -> update tbl k v) l;
+  tbl
+
 (* Finds "isolated" nodes,
    that is, nodes that have no dependencies *)
 let find_isolated_nodes hash =
@@ -122,7 +137,7 @@ let sort nodes =
       sorting_loop
         (List.append deps isolated_nodes) hash (List.append acc isolated_nodes)
   in
-  let nodes_hash = CCHashtbl.of_list nodes in
+  let nodes_hash = graph_hash_of_list nodes in
   let _nodes = add_missing_nodes nodes nodes_hash in
   let base_nodes = find_isolated_nodes nodes_hash in
   let () = remove_nodes base_nodes nodes_hash in
@@ -138,21 +153,6 @@ let sort nodes =
 *)
 module Graph = struct
   type ('a, 'b) t = ('a, 'b list) Hashtbl.t
-
-  let create l : (_, _) t =
-    let update h k v =
-      let orig_v = Compat.Hashtbl.find_opt h k in
-      match orig_v with
-      | None -> Hashtbl.add h k v
-      | Some orig_v ->
-        (* Allow "partial" dependency lists like [(1, [2]); (1, [3]); (2, [1])].
-           Sometimes it's a more natural way to write cyclic graphs.
-         *)
-        Hashtbl.replace h k (List.append orig_v v)
-    in
-    let tbl = Hashtbl.create 100 in
-    List.iter (fun (k, v) -> update tbl k v) l;
-    tbl
 
   let transpose tbl =
     let tbl2 = Hashtbl.create 100 in
@@ -202,7 +202,7 @@ let sort_partition graph_l clusters =
    strongly connected components.
 *)
 let partition graph_l =
-  let graph = Graph.create graph_l in
+  let graph = graph_hash_of_list graph_l in
   let graph_l = add_missing_nodes graph_l graph in
   let tr_graph = Graph.transpose graph in
   let visits = Hashtbl.create 100 in

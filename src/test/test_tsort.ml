@@ -63,8 +63,13 @@ let test_tsort () =
        implementation. *)
     Sorted [7; 6; 4; 5; 3; 2; 1]
   );
+  (* Tolerate missing nodes. *)
   assert (
     sort [1, [2]; 2, [3] (* 3 is missing *)] = Sorted [3; 2; 1]
+  );
+  (* Tolerate partial dependency lists. *)
+    assert (
+    sort [1, []; 2, []; 3, [2]; 3, [1]] = Sorted [1; 2; 3]
   )
 
 let test_find_sc_components () =
