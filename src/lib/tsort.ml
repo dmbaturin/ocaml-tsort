@@ -9,6 +9,26 @@ type 'a sort_result =
   | Sorted of 'a list
   | ErrorCycle of 'a list
 
+(* Deduplicate list items.
+
+   Differences with CCList.uniq:
+   - when an item is duplicated, keep the first item encountered rather than
+     the last: [1;2;3;1] gives [1;2;3] (not [2;3;1]).
+   - complexity is O(n), not O(n^2).
+*)
+let deduplicate l =
+  let tbl = Hashtbl.create (List.length l) in
+  List.fold_left (fun acc x ->
+    if Hashtbl.mem tbl x then
+      acc
+    else (
+      Hashtbl.add tbl x ();
+      x :: acc
+    )
+  ) [] l
+  |> List.rev
+
+
 let graph_hash_of_list l =
   let update h k v =
     let orig_v = Compat.Hashtbl.find_opt h k in
@@ -21,7 +41,8 @@ let graph_hash_of_list l =
       Hashtbl.replace h k (List.append orig_v v)
   in
   let tbl = Hashtbl.create 100 in
-  List.iter (fun (k, v) -> update tbl k v) l;
+  let () =List.iter (fun (k, v) -> update tbl k v) l in
+  let () = Hashtbl.filter_map_inplace (fun _ xs -> Some (deduplicate xs)) tbl in
   tbl
 
 (* Finds "isolated" nodes,
@@ -54,25 +75,6 @@ let remove_dependency hash dep =
   in
   let ids = Compat.Hashtbl.list_keys hash in
   List.iter (aux dep hash) ids
-
-(* Deduplicate list items.
-
-   Differences with CCList.uniq:
-   - when an item is duplicated, keep the first item encountered rather than
-     the last: [1;2;3;1] gives [1;2;3] (not [2;3;1]).
-   - complexity is O(n), not O(n^2).
-*)
-let deduplicate l =
-  let tbl = Hashtbl.create (List.length l) in
-  List.fold_left (fun acc x ->
-    if Hashtbl.mem tbl x then
-      acc
-    else (
-      Hashtbl.add tbl x ();
-      x :: acc
-    )
-  ) [] l
-  |> List.rev
 
 (* Finds non-existent nodes,
    that is, nodes that are mentioned in the value part of the assoc list,
