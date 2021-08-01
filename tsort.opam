@@ -1,5 +1,5 @@
 opam-version: "2.0"
-version: "2.0.0"
+version: "2.1.0"
 maintainer: "daniil@baturin.org"
 authors: ["Daniil Baturin <daniil@baturin.org>"]
 homepage: "https://github.com/dmbaturin/ocaml-tsort"
