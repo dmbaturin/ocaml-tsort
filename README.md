@@ -1,11 +1,13 @@
 ocaml-tsort [![CircleCI badge](https://circleci.com/gh/dmbaturin/ocaml-tsort.svg?style=svg)](https://app.circleci.com/pipelines/github/dmbaturin/ocaml-tsort)
 ===========
 
-This module provides topological sort based on Kahn's algorithm. It's not very fast, but it's easy to use
-and provides friendly error reporting.
+ocaml-tsort is a library for sorting graphs in topological order. Its UI/UX is inspired by the classic UNIX `tsort(1)`.
 
-It works on assoc lists (`('a * 'a list) list`). The keys are "tasks" and the values are lists of their dependencies.
+* Uses Kahn's algorithm.
+* Easy to use, but not very fast.
+* Provides friendly error reporting (e.g., if there's a cycle, tells you what the offending nodes are).
 
+The input type is (`('a * 'a list) list`). Essentially, a list of "tasks" mapped to lists of their dependencies.
 
 # Sorting DAGs
 
@@ -26,18 +28,30 @@ val sort : ('a * 'a list) list -> 'a sort_result
 Examples:
 
 ```
-# Tsort.sort [("foundation", []); ("walls", ["foundation"]); ("roof", ["walls"])] ;;
+# Tsort.sort [
+  ("foundation", []);
+  ("walls", ["foundation"]);
+  ("roof", ["walls"])
+] ;;
 - : string Tsort.sort_result = Tsort.Sorted ["foundation"; "walls"; "roof"]
 
-# Tsort.sort [("foundation", ["building permit"]); ("walls", ["foundation"]); ("roof", ["walls"])] ;;
+# Tsort.sort [
+  ("foundation", ["building permit"]);
+  ("walls", ["foundation"]);
+  ("roof", ["walls"])
+] ;;
 - : string Tsort.sort_result =
 Tsort.Sorted ["building permit"; "foundation"; "walls"; "roof"]
 
-# Tsort.sort [("foundation", ["roof"]); ("walls", ["foundation"]); ("roof", ["walls"])] ;;
+# Tsort.sort [
+  ("foundation", ["roof"]);
+  ("walls", ["foundation"]);
+  ("roof", ["walls"])
+] ;;
 - : string Tsort.sort_result = Tsort.ErrorCycle ["roof"; "foundation"; "walls"]
 ```
 
-As you can see from the second example, if there's a dependency on a node that doesn't exist in the assoc list keys,
+As you can see from the second example, if there's a dependency on a node that doesn't exist in the input,
 it's automatically inserted, and assumed to have no dependencies.
 
 # Detecting non-existent dependencies
@@ -48,7 +62,10 @@ is a user error.
 To prevent it, use `Tsort.find_nonexistent_nodes`. Example:
 
 ```
-# Tsort.find_nonexistent_nodes [("foundation", ["building permit"]); ("walls", ["foundation"]); ("roof", ["walls"])] ;;
+# Tsort.find_nonexistent_nodes [
+  ("foundation", ["building permit"]);
+  ("walls", ["foundation"]);
+  ("roof", ["walls"])] ;;
 - : (string * string list) list = [("foundation", ["building permit"])]
 ```
 
@@ -57,8 +74,8 @@ To prevent it, use `Tsort.find_nonexistent_nodes`. Example:
 Sometimes cycles are fine. In this case you can use `Tsort.sort_strongly_connected_components` to split
 your graph into strongly connected components and sort its condensation.
 
-Contrived example: you want to line up the Addams family so that children come after parents,
-but spouse and sibling pairs are not separated.
+Contrived example: suppose you want to line up the [Addams family](https://en.wikipedia.org/wiki/The_Addams_Family)
+so that children come after parents, but spouse and sibling pairs are not separated.
 
 ```
 Tsort.sort_strongly_connected_components [
