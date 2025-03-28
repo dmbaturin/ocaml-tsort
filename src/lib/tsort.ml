@@ -303,6 +303,6 @@ let sort_strongly_connected_components graph_l =
     | Sorted comp_ids -> List.map get_comp_members comp_ids
     | ErrorCycle _ ->
       (* Shouldn't happen if graph partioning etc. work correctly. *)
-      failwith "ocaml-tsort internal error: sorting strongly connected components failes. Please report a bug."
+      failwith "ocaml-tsort internal error: sorting strongly connected components failed. Please report a bug."
   in
   sorted_components
