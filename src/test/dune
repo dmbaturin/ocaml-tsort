@@ -1,4 +1,3 @@
-(executable
+(test
   (name test_tsort)
-  (libraries alcotest tsort)
-)
+  (libraries alcotest tsort))
