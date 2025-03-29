@@ -61,3 +61,12 @@ val find_nonexistent_nodes : ('a * 'a list) list -> ('a * 'a list) list
    sorting pass, the complexity of this implementation is O(n log n).
 *)
 val find_strongly_connected_components : ('a * 'a list) list -> 'a list list
+
+(** Find dependencies of a given node (direct and transitive).
+
+    Missing nodes are silently added to the graph.
+
+    This function is safe to use on graph with dependency cycles:
+    it just lists everything that is specified as a dependency.
+*)
+val find_dependencies : ('a * 'a list) list -> 'a -> 'a list

@@ -306,3 +306,12 @@ let sort_strongly_connected_components graph_l =
       failwith "ocaml-tsort internal error: sorting strongly connected components failed. Please report a bug."
   in
   sorted_components
+
+let find_dependencies graph node =
+  let rec aux graph node =
+    let deps = List.assoc node graph in
+    List.concat (List.map (aux graph) deps) |> List.append deps
+  in
+  let graph_hash = graph_hash_of_list graph in
+  let graph = add_missing_nodes graph graph_hash in
+  aux graph node |> deduplicate

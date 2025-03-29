@@ -127,6 +127,19 @@ let test_sort_sc_components () =
     = [[5]; [2; 3; 4]; [1]]
   )
 
+let test_find_dependencies () =
+  let graph = [1, [2; 3]; 2, [3; 5]; 3, [5; 8]] in
+  assert(
+    (Tsort.find_dependencies graph 1 |> List.sort compare) =
+    [2; 3; 5; 8]
+  );
+  assert(
+    (Tsort.find_dependencies graph 2 |> List.sort compare) =
+    [3; 5; 8]
+  );
+  assert((Tsort.find_dependencies graph 8) = [])
+  
+
 let main () =
   Alcotest.run "Tsort" [
     "Tsort", [
@@ -134,6 +147,7 @@ let main () =
       "sort", `Quick, test_tsort;
       "find s.c. components", `Quick, test_find_sc_components;
       "sort s.c. components", `Quick, test_sort_sc_components;
+      "find dependencies", `Quick, test_find_dependencies;
     ];
   ]
 
