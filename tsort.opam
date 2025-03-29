@@ -6,6 +6,7 @@ homepage: "https://github.com/dmbaturin/ocaml-tsort"
 bug-reports: "https://github.com/dmbaturin/ocaml-tsort/issues"
 dev-repo: "git+https://github.com/dmbaturin/ocaml-tsort.git"
 license: "MIT"
+x-maintenance-intent: ["(latest)"]
 build: [
   ["dune" "build" "-p" name "-j" jobs]
 ]
