@@ -1,5 +1,7 @@
-ocaml-tsort [![CircleCI badge](https://circleci.com/gh/dmbaturin/ocaml-tsort.svg?style=svg)](https://app.circleci.com/pipelines/github/dmbaturin/ocaml-tsort)
+ocaml-tsort
 ===========
+
+![Build](https://github.com/dmbaturin/ocaml-tsort/actions/workflows/main.yml/badge.svg)
 
 ocaml-tsort is a library for sorting graphs in topological order. Its UI/UX is inspired by the classic UNIX `tsort(1)`.
 
