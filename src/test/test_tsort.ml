@@ -138,7 +138,10 @@ let test_find_dependencies () =
     [3; 5; 8]
   );
   assert((Tsort.find_dependencies graph 8) = [])
-  
+
+let test_add_missing_nodes () =
+  let graph = [1, [2]] in
+  assert((Tsort.add_missing_nodes graph) = [1, [2]; 2, []])
 
 let main () =
   Alcotest.run "Tsort" [
@@ -148,6 +151,7 @@ let main () =
       "find s.c. components", `Quick, test_find_sc_components;
       "sort s.c. components", `Quick, test_sort_sc_components;
       "find dependencies", `Quick, test_find_dependencies;
+      "add_missing_nodes", `Quick, test_add_missing_nodes;
     ];
   ]
 

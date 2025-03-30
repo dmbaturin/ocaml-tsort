@@ -45,6 +45,16 @@ val sort_strongly_connected_components : ('a * 'a list) list -> 'a list list
 *)
 val find_nonexistent_nodes : ('a * 'a list) list -> ('a * 'a list) list
 
+(** Add nodes that are specified as a dependencies but not present in the graph.
+
+    The assumption is that in many cases those nodes are
+    simply nodes with no dependencies that are not mentioned explicitly.
+
+    For example: [add_missing_nodes ["test", ["build"]]
+    returns [["test", ["build"], "build", []]].
+ *)
+val add_missing_nodes : ('a * 'a list) list -> ('a * 'a list) list
+
 (**
    Partition a graph into its strongly-connected components:
    Two vertices u, v belong to the same component iff there's a path from

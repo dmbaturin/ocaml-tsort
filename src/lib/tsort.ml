@@ -100,7 +100,7 @@ let find_nonexistent_nodes nodes =
    encountered. This particular order doesn't have to be guaranteed by the
    API but seems nice to have.
 *)
-let add_missing_nodes graph_l graph =
+let _add_missing_nodes graph_l graph =
   let missing =
     List.fold_left (fun acc (_, vl) ->
       List.fold_left (fun acc v ->
@@ -114,6 +114,13 @@ let add_missing_nodes graph_l graph =
   in
   List.iter (fun (v, vl) -> Hashtbl.replace graph v vl) missing;
   graph_l @ missing
+
+(* The public version of [_add_missing_nodes]
+   that doesn't require a graph hash argument.
+ *)
+let add_missing_nodes graph =
+  let graph_hash = graph_hash_of_list graph in
+  _add_missing_nodes graph graph_hash
 
 (* The Kahn's algorithm:
     1. Find nodes that have no dependencies ("isolated") and remove them from
@@ -140,7 +147,7 @@ let sort nodes =
         (List.append deps isolated_nodes) hash (List.append acc isolated_nodes)
   in
   let nodes_hash = graph_hash_of_list nodes in
-  let _nodes = add_missing_nodes nodes nodes_hash in
+  let _nodes = _add_missing_nodes nodes nodes_hash in
   let base_nodes = find_isolated_nodes nodes_hash in
   let () = remove_nodes base_nodes nodes_hash in
   let sorted_node_ids = sorting_loop base_nodes nodes_hash [] in
@@ -199,7 +206,7 @@ let sort_partition graph_l clusters =
 *)
 let partition graph_l =
   let graph = graph_hash_of_list graph_l in
-  let graph_l = add_missing_nodes graph_l graph in
+  let graph_l = _add_missing_nodes graph_l graph in
   let tr_graph = transpose graph in
   let visits = Hashtbl.create 100 in
   let is_visited v = Hashtbl.mem visits v in
@@ -313,5 +320,5 @@ let find_dependencies graph node =
     List.concat (List.map (aux graph) deps) |> List.append deps
   in
   let graph_hash = graph_hash_of_list graph in
-  let graph = add_missing_nodes graph graph_hash in
+  let graph = _add_missing_nodes graph graph_hash in
   aux graph node |> deduplicate
