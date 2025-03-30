@@ -8,11 +8,17 @@ dev-repo: "git+https://github.com/dmbaturin/ocaml-tsort.git"
 license: "MIT"
 x-maintenance-intent: ["(latest)"]
 build: [
-  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "build"
+   "-p"
+   name
+   "-j" jobs
+   "@install"
+   "@runtest" {with-test}]
 ]
 depends: [
   "ocaml" {>= "4.03.0"}
   "dune" {>= "1.9"}
+  "alcotest" {with-test}
 ]
 synopsis: "Easy to use and user-friendly topological sort"
 description: """
