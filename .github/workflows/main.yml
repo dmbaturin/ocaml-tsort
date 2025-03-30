@@ -32,7 +32,7 @@ jobs:
     - name: Install OCaml dependencies from opam
       run: |
         echo Installing OCaml dependencies
-        opam install -y --deps-only .
+        opam install -y --with-test .
 
     - name: Run tests
       run: |
