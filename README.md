@@ -1,6 +1,7 @@
 ocaml-tsort
 ===========
 
+![maintenance-status](https://img.shields.io/badge/maintenance-passively--maintained-yellowgreen.svg)
 ![Build](https://github.com/dmbaturin/ocaml-tsort/actions/workflows/main.yml/badge.svg)
 
 ocaml-tsort is a library for sorting graphs in topological order. Its UI/UX is inspired by the classic UNIX `tsort(1)`.
